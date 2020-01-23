@@ -1,0 +1,13 @@
+@import "../valo/valo.scss";
+@include valo;
+
+$green: #000000 !default;
+
+.mytheme {
+
+  .cancel-button{
+    color: green;
+    background: green;
+    background-color: green;
+  }
+}

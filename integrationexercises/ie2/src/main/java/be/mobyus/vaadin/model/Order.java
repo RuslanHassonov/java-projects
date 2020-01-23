@@ -1,12 +1,12 @@
 package be.mobyus.vaadin.model;
 
-import static java.math.BigDecimal.ZERO;
-
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import static java.math.BigDecimal.ZERO;
 
 public class Order implements Serializable {
 
