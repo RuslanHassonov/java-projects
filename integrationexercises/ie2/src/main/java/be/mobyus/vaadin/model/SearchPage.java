@@ -6,6 +6,9 @@ import com.vaadin.server.Sizeable;
 import com.vaadin.server.VaadinSession;
 import com.vaadin.shared.ui.ContentMode;
 import com.vaadin.ui.*;
+import com.vaadin.v7.data.validator.DoubleValidator;
+import com.vaadin.v7.data.validator.EmailValidator;
+import com.vaadin.v7.data.validator.IntegerValidator;
 import com.vaadin.v7.ui.TextField;
 
 import java.math.BigDecimal;
@@ -15,10 +18,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class SearchPage extends Template {
 
     private List<Order> orderList;
-	Grid<Order> grid;
-	private OrderSearchCriteria orderSearchCriteria;
+    Grid<Order> grid;
+    private OrderSearchCriteria orderSearchCriteria;
 
-	@Override
+    @Override
     protected Component getBody() {
         VerticalLayout verticalLayout = new VerticalLayout();
         Label separator;
@@ -71,13 +74,18 @@ public class SearchPage extends Template {
         final TextField minAmountTextField = new TextField();
         minAmountTextField.setInputPrompt("Minimum Amount");
         minAmountTextField.setNullRepresentation("");
-        minAmountTextField.setValidationVisible(true);
+        minAmountTextField.addFocusListener(focusEvent -> {
+            minAmountTextField.setValidationVisible(true);
+            minAmountTextField.addValidator(new DoubleValidator("This value is not correct."));
+        });
 
         final TextField maxAMountTextField = new TextField();
         maxAMountTextField.setInputPrompt("Maximum Amount");
         maxAMountTextField.setNullRepresentation("");
-        maxAMountTextField.setValidationVisible(true);
-
+        maxAMountTextField.addFocusListener(focusEvent -> {
+            maxAMountTextField.setValidationVisible(true);
+            maxAMountTextField.addValidator(new DoubleValidator("This value is not correct."));
+        });
         final TextField nrOfProductsTextField = new TextField();
         nrOfProductsTextField.setInputPrompt("Number of Products");
         nrOfProductsTextField.setNullRepresentation("");
@@ -92,29 +100,33 @@ public class SearchPage extends Template {
         final TextField emailAddressTextField = new TextField();
         emailAddressTextField.setInputPrompt("Email Address");
         emailAddressTextField.setNullRepresentation("");
-        emailAddressTextField.setValidationVisible(true);
-
+        emailAddressTextField.addFocusListener(focusEvent -> {
+            emailAddressTextField.setValidationVisible(true);
+            emailAddressTextField.addValidator(new EmailValidator("This email format is not correct."));
+        });
         final Button search = new Button("Search");
-		search.addClickListener(event ->{
-			orderSearchCriteria = getOrderSearchCriteria(
-					minAmountTextField.getValue(),
-					maxAMountTextField.getValue(),
-					nrOfProductsTextField.getValue(),
-					productNameTextField.getValue(),
-					emailAddressTextField.getValue());
+        search.addClickListener(event -> {
+            orderSearchCriteria = getOrderSearchCriteria(
+                    minAmountTextField.getValue(),
+                    maxAMountTextField.getValue(),
+                    nrOfProductsTextField.getValue(),
+                    productNameTextField.getValue(),
+                    emailAddressTextField.getValue());
 
-			orderList = searchOrdersWithCriteria(orderSearchCriteria);
-			grid.setItems(orderList);
+            orderList = searchOrdersWithCriteria(orderSearchCriteria);
+            grid.setItems(orderList);
 
-		});
+        });
 
         final Button clear = new Button("Clear");
         clear.addClickListener(event -> {
-            minAmountTextField.clear();
-            maxAMountTextField.clear();
-            nrOfProductsTextField.clear();
-            productNameTextField.clear();
-            emailAddressTextField.clear();
+            minAmountTextField.setValue(null);
+            maxAMountTextField.setValue(null);
+            nrOfProductsTextField.setValue(null);
+            productNameTextField.setValue(null);
+            emailAddressTextField.setValue(null);
+            orderList.clear();
+            grid.setItems(orderList);
         });
 
         gridLayout.addComponent(minAmount, 0, 0);
@@ -167,9 +179,15 @@ public class SearchPage extends Template {
 
     private OrderSearchCriteria getOrderSearchCriteria(String minAmount, String maxAmount, String nrOfProducts, String productName, String emailAddress) {
         OrderSearchCriteria orderSearchCriteria = new OrderSearchCriteria();
-        if (!minAmount.equals("")) {orderSearchCriteria.setMinAmount(BigDecimal.valueOf(Long.parseLong(minAmount)));}
-        if (!maxAmount.equals("")) {orderSearchCriteria.setMaxAmount(BigDecimal.valueOf(Long.parseLong(maxAmount)));}
-        if (!nrOfProducts.equals("")) {orderSearchCriteria.setNumberOfProducts(Integer.valueOf(nrOfProducts));}
+        if (!minAmount.equals("")) {
+            orderSearchCriteria.setMinAmount(BigDecimal.valueOf(Long.parseLong(minAmount)));
+        }
+        if (!maxAmount.equals("")) {
+            orderSearchCriteria.setMaxAmount(BigDecimal.valueOf(Long.parseLong(maxAmount)));
+        }
+        if (!nrOfProducts.equals("")) {
+            orderSearchCriteria.setNumberOfProducts(Integer.valueOf(nrOfProducts));
+        }
 
         orderSearchCriteria.setProductName(minAmount);
         orderSearchCriteria.setEmail(emailAddress);
