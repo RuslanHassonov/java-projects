@@ -4,6 +4,7 @@ import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Widgetset;
 import com.vaadin.navigator.Navigator;
 import com.vaadin.server.VaadinRequest;
+import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.Panel;
@@ -40,13 +41,9 @@ public class MyUi extends UI {
 	}
 
 	private void installTemplate() {
+		navigator.addView("LoginPage", LoginPage.class);
 		navigator.addView("SearchPage", SearchPage.class);
 		navigator.addView("DetailsPage", DetailsPage.class);
-		navigator.addView("LoginPage", LoginPage.class);
-		MenuBar.MenuItem item = menuBar.addItem("Navigation");
-		item.addItem("Search Page", (selectedItem) -> navigator.navigateTo("SearchPage"));
-		item.addItem("Details Page", (selectedItem) -> navigator.navigateTo("DetailsPage"));
-		item.addItem("Login Page", (selectedItem) -> navigator.navigateTo("LoginPage"));
 	}
 }
 

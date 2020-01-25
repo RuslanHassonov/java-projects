@@ -79,6 +79,16 @@ public class OrderServiceImpl implements OrderService, Serializable {
 		return map.get(FIXED_CUSTOMER);
 	}
 
+	public Order getOrderById(String orderId){
+		List<Order> orderList = getAllOrdersForCustomer();
+		for (Order item: orderList) {
+			if (item.getOrderId().equals(orderId)){
+				return item;
+			}
+		}
+		return null;
+	}
+
 	@SuppressWarnings("boxing")
 	private void createTestData() {
 		List<Order> orders = new ArrayList<Order>();
